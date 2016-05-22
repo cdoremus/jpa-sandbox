@@ -3,10 +3,9 @@ package org.cdoremus.jpa_sandbox.data;
 import static org.junit.Assert.*;
 
 import javax.inject.Inject;
-import javax.validation.ConstraintViolationException;
 
 import org.cdoremus.jpa_sandbox.TestConfig;
-import org.cdoremus.jpa_sandbox.domain.User;
+import org.cdoremus.jpa_sandbox.domain.Item;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,10 +21,10 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(classes={TestConfig.class})
 @Transactional
 @TransactionConfiguration(defaultRollback = true)
-public class UserRepositoryTest {
+public class ItemRepositoryTest {
 
 	@Inject
-	UserRepository repository;
+	private ItemRepository repository;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -45,37 +44,22 @@ public class UserRepositoryTest {
 
 	@Test
 	public void testCreate() {
-		User user = new User("first", "last", "first@email.com");
-
-		long id = repository.create(user);
+		Item item = new Item("Item 1");
+		
+		Long id = repository.create(item);
 		
 		assertTrue(id > 0);
-		
 	}
 
 	@Test
-	public void testCreate_BadEmail() {
-		User user = new User("first", "last", "firstemail.com");
-
-		try {
-			repository.create(user);
-			fail("Should not get here as ConstraintViolationException should be thrown");
-		} catch (ConstraintViolationException e) {
-			String message = e.getConstraintViolations().iterator().next().getMessage();
-			assertEquals("The email address must be valid.", message);
-		} catch (Throwable t) {
-			fail("Should only throw a ConstraintViolationException");
-		}
-	}
-
-	@Test(expected=ConstraintViolationException.class)
-	public void testCreate_NullLastName() {
-		User user = new User("first", null, "first@email.com");
-
-		long id = repository.create(user);
+	public void testFind() {
+		Item item = new Item("Item 1");
 		
-		assertTrue(id > 0);
+		Long id = repository.create(item);
 		
+		Item found = repository.find(id);
+		
+		assertEquals("Item 1", found.getName());
 	}
 
 }

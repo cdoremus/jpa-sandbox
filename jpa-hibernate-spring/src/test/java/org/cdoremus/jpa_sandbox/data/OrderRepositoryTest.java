@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -52,10 +53,27 @@ public class OrderRepositoryTest {
 	}
 
 	@Test
-	public void testCreate() {
-//		List<Item> items = new ArrayList<>();
-//		Item item = new Item("Item 1");
-//		items.add(item);
+	public void testCreate_OrderWithCustomerAndItems() {
+
+		Customer customer = new Customer("first", "last", "last@email.com", "100 main st", "New York", "NY", "12054");
+		customerRepository.create(customer);
+		
+		Order order = new Order("Order 1");
+		order.setCustomer(customer);
+		Item item1 = new Item("Item 1");
+		order.addItem(item1);
+		Item item2 = new Item("Item 2");
+		order.addItem(item2);
+		
+		long id = repository.create(order);
+		
+		assertTrue(id > 0);
+		assertEquals(2, order.getItems().size());
+		assertEquals("first", order.getCustomer().getFirstName());
+	}
+
+	@Test
+	public void testCreate_OrderWithCustomerAndNoItems() {
 
 		Customer customer = new Customer("first", "last", "last@email.com", "100 main st", "New York", "NY", "12054");
 		customerRepository.create(customer);
@@ -63,11 +81,23 @@ public class OrderRepositoryTest {
 		Order order = new Order("Order 1");
 		order.setCustomer(customer);
 		
-//		order.addItem(item);
-		
 		long id = repository.create(order);
 		
 		assertTrue(id > 0);
+		assertEquals(0, order.getItems().size());
+		assertEquals("first", order.getCustomer().getFirstName());
+	}
+
+	@Test(expected=DataIntegrityViolationException.class)
+	public void testCreate_CustomerNotPersisted_ThrowsException() {
+
+		Customer customer = new Customer("first", "last", "last@email.com", "100 main st", "New York", "NY", "12054");
+//		customerRepository.create(customer); <-removal of call causes exception
+		
+		Order order = new Order("Order 1");
+		order.setCustomer(customer);
+		
+		repository.create(order);
 		
 	}
 	
@@ -80,10 +110,10 @@ public class OrderRepositoryTest {
 		Order order = new Order("Order 1");
 		order.setCustomer(customer);
 		
-//		Item item1 = new Item("Item 1");
-//		order.addItem(item1);
-//		Item item2 = new Item("Item 2");
-//		order.addItem(item2);
+		Item item1 = new Item("Item 1");
+		order.addItem(item1);
+		Item item2 = new Item("Item 2");
+		order.addItem(item2);
 		
 		Long id = repository.create(order);
 		

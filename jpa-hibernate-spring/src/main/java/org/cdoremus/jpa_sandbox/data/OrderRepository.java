@@ -35,6 +35,7 @@ public class OrderRepository {
 		return (Order)query.getSingleResult();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Order> findAll() {
 		Query query =  entityManager.createQuery("select o from Order o", Order.class);
 		return (List<Order>)query.getResultList();

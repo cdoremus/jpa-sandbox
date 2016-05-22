@@ -5,10 +5,13 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 @Entity
 public class Item implements Serializable {
@@ -16,6 +19,7 @@ public class Item implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
+	@GeneratedValue
 	private Long itemId;
 	
 	@Column(name="order_name")
@@ -57,4 +61,8 @@ public class Item implements Serializable {
 		this.order = order;
 	}
 
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
+	}
 }

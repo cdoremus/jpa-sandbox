@@ -4,7 +4,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.cdoremus.jpa_sandbox.domain.Item;
-import org.cdoremus.jpa_sandbox.domain.Order;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,5 +21,10 @@ public class ItemRepository {
 		return item.getItemId();
 	}
 
+	public Item find(Long id) {
+		
+		return entityManager.find(Item.class, id);
+		
+	}
 
 }

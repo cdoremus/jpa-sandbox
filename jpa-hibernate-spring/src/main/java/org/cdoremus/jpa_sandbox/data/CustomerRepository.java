@@ -32,6 +32,7 @@ public class CustomerRepository {
 		return customer;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Customer> findAll() {
 		Query query =  entityManager.createQuery("select c from Customer c", Customer.class);
 		return (List<Customer>)query.getResultList();

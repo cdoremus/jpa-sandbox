@@ -8,6 +8,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 
@@ -19,14 +20,19 @@ public class User {
 	@Id
 	@GeneratedValue
 	protected Long userId;	
+
 	@Column(name="first_name")
 	@NotNull
+	@Size(min=2, max=30, message="{firstName.size}")
 	protected String firstName;
+	
 	@Column(name="last_name")
 	@NotNull
+	@Size(min=2, max=30, message="{lastName.size}")
 	protected String lastName;
+	
 	@Column
-	@Email
+	@Email(message="{email.valid}")
 	protected String email;
 	
 	

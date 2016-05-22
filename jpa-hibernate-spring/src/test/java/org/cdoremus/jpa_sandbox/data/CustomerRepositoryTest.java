@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.validation.ConstraintViolationException;
 
 import org.cdoremus.jpa_sandbox.TestConfig;
 import org.cdoremus.jpa_sandbox.domain.Customer;
@@ -50,8 +51,8 @@ public class CustomerRepositoryTest {
 	@Test
 	public void testCreate() {
 		
-		Order order = new Order("order 1");
 		Customer customer = new Customer("first", "last", "last@email.com", "100 main st", "New York", "NY", "12054");
+		Order order = new Order("order 1");
 		customer.addOrder(order);
 		
 		long id = repository.create(customer);
@@ -117,5 +118,21 @@ public class CustomerRepositoryTest {
 			System.out.println("Order: " + order.getName());
 		}
 		
+	}
+
+	@Test
+	public void testCustomerWithInvalidZipCode() {
+		
+		Customer customer = new Customer("first", "last", "last@email.com", "100 main st", "New York", "NY", "1205");
+		
+		try {
+			repository.create(customer);
+			fail("Should throw exception");
+		} catch (ConstraintViolationException e) {
+			String message = e.getConstraintViolations().iterator().next().getMessage();
+			assertEquals("A valid zip code must be entered.", message);
+		}
+		
+
 	}
 }

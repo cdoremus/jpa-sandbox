@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
@@ -18,14 +20,19 @@ public class Customer extends User {
 	@Column
 	@NotNull
 	private String address1;
+	
 	@Column
 	@NotNull
 	private String city;
+	
 	@Column
 	@NotNull
+	@Size(min=2, max=2, message="{state.size}")
 	private String state;
+	
 	@Column(name="zip_code")
 	@NotNull
+	@Pattern(regexp="^\\d{5}(?:[-\\s]\\d{4})?$", message="{zipcode.valid}")
 	private String zipCode;
 
 	@OneToMany(mappedBy="customer",targetEntity=Order.class,
